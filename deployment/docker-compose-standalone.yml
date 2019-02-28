@@ -1,0 +1,379 @@
+##################################################################################
+# Name:        docker-compose-standalone.yml
+# Purpose:     docker-compose file to bring up local 2Immerse production service platform instance
+# Author:      2-IMMERSE Team
+# Created:     2018/04/18
+#
+#  Copyright 2018 Cisco and/or its affiliates
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#
+##################################################################################
+# Note: DO NOT UPGRADE THE DOCUMENT ABOVE VERSION 2.3!!
+#       2.3 is the LAST compose version that supports the condition form of service dependencies!
+##################################################################################
+version: '2.3'
+
+services:
+  consul:
+    image: gliderlabs/consul-server:latest
+    container_name: consul
+    command: "-server -bootstrap"
+    ports:
+      - 8500:8500
+    networks:
+      2immerse:
+        aliases:
+          - consul.service.consul
+    healthcheck:
+      test: "curl -f 'http://consul:8500/v1/health/node/health'"
+      interval: 10s
+      retries: 10
+
+
+  registrator:
+    image: gliderlabs/registrator:master
+    container_name: registrator
+    command: "consul://consul:8500"
+    depends_on:
+      consul:
+        condition: service_healthy
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock"
+    networks:
+      - 2immerse
+    healthcheck:
+      test: "ps | grep -v grep | grep -qwF registrator"
+      interval: 2s
+
+  mongo:
+    image: mongo:3.4.9
+    container_name: mongo
+    depends_on:
+      registrator:
+        condition: service_healthy
+    volumes:
+      - "mongodata-2immerse:/data/db"
+      - "mongoconfig-2immerse:/data/configdb"
+    ports:
+      - 27017:27017
+    environment:
+      - "AUTH=no"
+    labels:
+      - "SERVICE_NAME=mongo"
+    networks:
+      2immerse:
+        aliases:
+          - mongo.service.consul
+    healthcheck:
+      test: "echo 'db.stats()' | mongo mongo:27017/test --quiet"
+      interval: 10s
+      retries: 10
+
+  websocket:
+    image: websocket-service:1.0.3
+    container_name: websocket
+    command: -v -c http://consul:8500
+    depends_on:
+      registrator:
+        condition: service_healthy
+    ports:
+      - 3000:3000
+    labels:
+      - "SERVICE_NAME=websocket-service"
+    networks:
+      2immerse:
+        aliases:
+          - websocket-service.service.consul
+    healthcheck:
+      test: "wget 'http://websocket:3000/healthcheck' -O /dev/null"
+      interval: 10s
+      retries: 10
+
+  timeline:
+    image: timeline-service:1.7.2
+    container_name: timeline
+    depends_on:
+      registrator:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    labels:
+      - "SERVICE_NAME=timeline-service"
+    environment:
+      TIMELINE_SERVICE_URL: https://timeline-service.platform.2immerse.eu
+    networks:
+      2immerse:
+        aliases:
+          - timeline-service.service.consul
+    healthcheck:
+      test: "python -c 'import requests; resp = requests.get('\\''http://127.0.0.1:8080/timeline/v1/context'\\''); resp.raise_for_status()'"
+      interval: 10s
+      retries: 10
+
+  editor:
+    image: 2immerse-editor:1.2.4
+    container_name: editor
+    depends_on:
+      registrator:
+        condition: service_healthy
+    ports:
+      - 8008:8000
+    labels:
+      - "SERVICE_NAME=editor"
+    environment:
+        LAYOUT_SERVICE_URL: https://layout-service.platform.2immerse.eu/layout/v4
+        WEBSOCKET_SERVICE_URL: https://websocket-service.platform.2immerse.eu/
+        TIMELINE_SERVICE_URL: https://timeline-service.platform.2immerse.eu/timeline/v1
+        KIBANA_SERVICE_URL: https://kibana.platform.2immerse.eu/kibana/app/kibana
+        CLIENT_API_URL: https://origin.platform.2immerse.eu/client-api/master/dist/test/general-test/dist/index.html
+    networks:
+      2immerse:
+        aliases:
+          - editor.service.consul
+    healthcheck:
+      test: "wget 'http://127.0.0.1:8000/' -O /dev/null"
+      interval: 10s
+      retries: 10
+
+  influxdb:
+    image: influxdb:1.3.5
+    container_name: influxdb
+    depends_on:
+      registrator:
+        condition: service_healthy
+    ports:
+      - 8086:8086
+    environment:
+      - "AUTH=no"
+    labels:
+      - "SERVICE_NAME=influxdb"
+    networks:
+      2immerse:
+        aliases:
+          - influxdb.service.consul
+    healthcheck:
+      test: "curl -f 'http://influxdb:8086/ping'"
+      interval: 10s
+      retries: 10
+
+  bandwidth-orchestration-service:
+    image: bandwidth-orchestration:1.0.6
+    container_name: bandwidth-orchestration
+    command: -- -i influxdb -w websocket-service -m mongo -c http://consul:8500 -p 4000 -c http
+    depends_on:
+      influxdb:
+        condition: service_healthy
+      websocket:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    ports:
+      - 4000:4000
+    labels:
+      - "SERVICE_NAME=bandwidth-orchestration"
+    networks:
+      2immerse:
+        aliases:
+          - bandwidth-orchestration-service.service.consul
+    healthcheck:
+      test: "sh -c '/bin/echo -e '\\''GET /healthcheck\\n\\n'\\''; sleep 1' | nc 127.0.0.1 4000 | grep -v grep | grep -qwF '200 OK'"
+      interval: 10s
+      retries: 10
+
+  layout:
+    image: layout-service:2.0.13
+    container_name: layout-service
+    command: -c http://consul:8500 -v -w websocket-service -t timeline-service -m mongo
+    stdin_open: true
+    tty: true
+    depends_on:
+      registrator:
+        condition: service_healthy
+      websocket:
+        condition: service_healthy
+      timeline:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    ports:
+      - 8000:3000
+    environment:
+      LOG_NAME: LayoutServiceDev
+      MARATHON_APP_ID: /layout-service
+      PORT0: 3000
+      CORS_ORIGIN: https://origin.platform.2immerse.eu
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    labels:
+      - "SERVICE_NAME=layout-service"
+    networks:
+      2immerse:
+        aliases:
+          - layout-service.service.consul
+    healthcheck:
+      test: "sh -c '/bin/echo -e '\\''GET /healthcheck\\n\\n'\\''; sleep 1' | nc 127.0.0.1 3000 | grep -qwF '204 No Content'"
+      interval: 10s
+      retries: 10
+
+  logging:
+    image: logging-service:1.0.1
+    container_name: logging-service
+    depends_on:
+      registrator:
+        condition: service_healthy
+    ports:
+      - 3001:3000
+    labels:
+      - "SERVICE_NAME=logging-service"
+    networks:
+      2immerse:
+        aliases:
+          - logging-service.service.consul
+    healthcheck:
+      test: "wget 'http://127.0.0.1:3000/' -O /dev/null"
+      interval: 10s
+      retries: 10
+
+  wallclock:
+    image: wallclock-service:1.0.0
+    container_name: wallclock-service
+    depends_on:
+      registrator:
+        condition: service_healthy
+    ports:
+      - 6676:6676
+      - 6678:6677/udp
+      - 8001:80
+    labels:
+      - "SERVICE_NAME=wallclock-service"
+    networks:
+      2immerse:
+        aliases:
+          - wallclock-service.service.consul
+    healthcheck:
+      test: "wget 'http://127.0.0.1/' -O /dev/null"
+      interval: 10s
+      retries: 10
+
+  state:
+    image: shared-state-service:1.0.0
+    container_name: shared-state-service
+    depends_on:
+      registrator:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    ports:
+      - 8081:8080
+    environment:
+      CONSUL_CONNECT: consul:8500
+      MONGODB_SERVICE: mongo
+    labels:
+      - "SERVICE_NAME=shared-state-service"
+    networks:
+      2immerse:
+        aliases:
+          - shared-state-service.service.consul
+    healthcheck:
+      test: "wget 'http://127.0.0.1:8080/' -O /dev/null"
+      interval: 10s
+      retries: 10
+
+  auth:
+    image: auth-service:1.0.6
+    container_name: auth
+    command: "-debug"
+    depends_on:
+      registrator:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    ports:
+      - 8090:8080
+    environment:
+      CONSUL_HTTP_ADDR: consul:8500
+      MONGODB_SERVICE: mongo
+    labels:
+      - "SERVICE_NAME=auth-service"
+    networks:
+      - 2immerse
+    healthcheck:
+      test: "wget 'http://127.0.0.1:8080/healthcheck' -O /dev/null"
+      interval: 10s
+      retries: 10
+
+  admin:
+    image: auth-admin:1.0.4
+    container_name: admin
+    depends_on:
+      auth:
+        condition: service_healthy
+    ports:
+      - 9000:80
+    environment:
+      AUTH_ENDPOINT: https://auth-service.platform.2immerse.eu
+      SERVICE_NAME: admin
+    labels:
+      - "SERVICE_NAME=admin"
+    networks:
+      - 2immerse
+    healthcheck:
+      test: "wget 'http://127.0.0.1/' -O /dev/null"
+      interval: 10s
+      retries: 10
+
+  origin:
+    image: nginx:alpine
+    container_name: origin
+    volumes:
+      - /media/jawalke2/usb-ext4:/usr/share/nginx/html:ro
+    ports:
+      - 9080:80
+    labels:
+      - "SERVICE_NAME=origin"
+    networks:
+      2immerse:
+        aliases:
+          - origin.service.consul
+    healthcheck:
+        test: "wget 'http://127.0.0.1' -O /dev/null"
+        interval: 10s
+        retries: 10
+
+  lb:
+    image: haproxy:alpine
+    container_name: lb
+    labels:
+      - "SERVICE_NAME=lb"
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy:ro
+      - ./certs://etc/haproxy/certs/current:ro
+    ports:
+      -  80:80
+      -  443:443
+    networks:
+      2immerse:
+        aliases:
+          - lb.service.consul
+    healthcheck:
+      test: "sh -c '/bin/echo -e '\\''GET / HTTP/1.0\\n\\n'\\''; sleep 1' | nc 127.0.0.1 80 | grep -qwF '503 Service'"
+      interval: 10s
+      retries: 10
+
+networks:
+  2immerse:
+    driver: bridge
+
+volumes:
+  mongodata-2immerse:
+  mongoconfig-2immerse:
