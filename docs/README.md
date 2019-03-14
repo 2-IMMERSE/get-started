@@ -1,5 +1,7 @@
 # 2-IMMERSE documentation
 
+This directory is the starting point for learning more about the 2-IMMERSE software, the governance of the project and ways of contributing.
+
 See [deliverables](https://2immerse.eu/deliverables/): D2.1 - System Architecture [PDF](https://2immerse.eu/wp-content/uploads/2018/01/d2.1_r2-system_architecture-clean.pdf) and D2.6 - Distributed Media Application Platform: Public Software Release [PDF](https://2immerse.eu/wp-content/uploads/2019/01/d2.6-distributed-media-application-platform-public-software-release-final-submitted-19th-dec-2018.pdf) for general background on the system architecture.
 
 ## REST APIs
