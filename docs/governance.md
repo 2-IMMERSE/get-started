@@ -6,18 +6,20 @@ This open source project is led by the 2-IMMERSE consortium and managed by the c
 ## Roles And Responsibilities
 
 ### 2-IMMERSE Consortium (project lead)
+
 The 2-IMMERSE consortium is the self-appointed project lead, however, because the community always has the ability to fork, the project lead is fully answerable to the community. The project lead’s role is a difficult one: they set the strategic objectives of the project and communicate these clearly to the community. They also have to understand the community as a whole and strive to satisfy as many conflicting needs as possible, while ensuring that the project survives in the long term.
 
 In many ways, the role of the project lead is less about dictatorship and more about diplomacy. The key is to ensure that, as the project expands, the right people are given influence over it and the community rallies behind the vision of the project lead. The lead’s job is then to ensure that the committers (see below) make the right decisions on behalf of the project. Generally speaking, as long as the committers are aligned with the project’s strategy, the project lead will allow them to proceed as they desire.
 
 ### Committers
+
 Committers are contributors who have made several valuable contributions to the project and are now relied upon to both write code directly to the repository and screen the contributions of others. In many cases they are programmers but it is also possible that they contribute in a different role. Typically, a committer will focus on a specific aspect of the project, and will bring a level of expertise and understanding that earns them the respect of the community and the project lead. The role of committer is not an official one, it is simply a position that influential members of the community will find themselves in as the project lead looks to them for guidance and support.
 
 Committers have no authority over the overall direction of the project. However, they do have the ear of the project lead. It is a committer’s job to ensure that the lead is aware of the community’s needs and collective objectives, and to help develop or elicit appropriate contributions to the project. Often, committers are given informal control over their specific areas of responsibility, and are assigned rights to directly modify certain areas of the source code. That is, although committers do not have explicit decision-making authority, they will often find that their actions are synonymous with the decisions made by the lead.
 
 ### Contributors
 
-Contributors are community members who either have no desire to become committers, or have not yet been given the opportunity by the project lead. They make valuable contributions, such as those outlined in the list below, but generally do not have the authority to make direct changes to the project code. Contributors engage with the project through communication tools, such as email lists, and via reports and patches attached to issues in the issue tracker, as detailed in our community tools document.
+Contributors are community members who either have no desire to become committers, or have not yet been given the opportunity by the project lead. They make valuable contributions, such as those outlined in the list below, but generally do not have the authority to make direct changes to the project code. Contributors engage with the project through communication tools, such as email lists, and via reports and patches attached to issues in the GitHub issue tracker.
 
 Anyone can become a contributor. There is no expectation of commitment to the project, no specific skill requirements and no selection process. To become a contributor, a community member simply has to perform one or more actions that are beneficial to the project.
 
