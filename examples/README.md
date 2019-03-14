@@ -1,10 +1,15 @@
 # 2-IMMERSE Example DMApps
 
-TODO: This directory needs:
+This directory contains a number of simple DMApps in the form of technical samples and other example configuration documents. 
 
-- epg.json
-- images (screen grabs?) to use of thumbnail for epg.json
+## Directory Structure
+
+- epg
+    Example electronic programme guide document used by the unified launcher web application.
+    
+## TODO: This directory needs:
+
 - Name/short-description of example
 - example1, example2, example3 subdirectories containing a selection of tech-samples
-- build/deploy scripts to copy each/all examples to the volume mounted as origin server by docker-compose
-- each example needs a README.md describing in more details what is being demonstrated
+- Each example needs a build/deploy shell script to copy timeline/layout documents to the volume mounted by docker-compose for nginx/ the origin server.
+- Each example needs a README.md describing in more details what is being demonstrated
