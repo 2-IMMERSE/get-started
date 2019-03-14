@@ -1,0 +1,189 @@
+{
+  "version": "0.0.1",
+  "programmes": [
+    {
+      "id": 0,
+      "profileKey": "motogp_1_0_0",
+      "titleText": "MotoGP",
+      "captionText": "Follow all the action from the MotoGP race.",
+      "descriptionText": "",
+      "imageUrl": "/unified-launcher/epg/images/moto-gp-logo.svg",
+      "deviceRoles": {
+        "Primary Communal": {
+          "required": true,
+          "master": true,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/motogp/client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/motogp/client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/motogp/client.json" }
+            }
+          }
+        },
+        "Companion": {
+          "required": false,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/motogp/companion-client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/motogp/companion-client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/motogp/companion-client.json" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 1,
+      "profileKey": "football_fanzone_1_0_0",
+      "titleText": "Football Fanzone",
+      "captionText": "Catchup on the FA Cup Final from Wembley.",
+      "descriptionText": "",
+      "imageUrl": "/unified-launcher/epg/images/fa-cup-logo.svg",
+      "deviceRoles": {
+        "Primary Communal": {
+          "required": true,
+          "master": true,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/football-fanzone/client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/football-fanzone/client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/football-fanzone/client.json" }
+            }
+          }
+        },
+        "Home Team Communal": {
+          "required": false,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/football-fanzone/client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/football-fanzone/client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/football-fanzone/client.json" }
+            }
+          }
+        },
+        "Away Team Communal": {
+          "required": false,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/football-fanzone/client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/football-fanzone/client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/football-fanzone/client.json" }
+            }
+          }
+        },
+        "Companion": {
+          "required": false,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/football-fanzone/companion-client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/football-fanzone/companion-client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/football-fanzone/companion-client.json" }
+            }
+          }
+        }
+      } 
+    },
+    {
+      "id": 2,
+      "profileKey": "theatre_in_schools_1_0_0",
+      "titleText": "Theatre In School",
+      "captionText": "Watch, make and share Shakespeare with your friends.",
+      "descriptionText": "",
+      "imageUrl": "/unified-launcher/epg/images/donmar-logo.jpg",
+      "deviceRoles": {
+        "Primary Communal": {
+          "required": true,
+          "master": true,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/theatre-in-schools/client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/theatre-in-schools/client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/theatre-in-schools/client.json" }
+            }
+          }
+        },
+        "Companion": {
+          "required": false,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/theatre-in-schools/companion-client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/theatre-in-schools/companion-client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/theatre-in-schools/companion-client.json" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "profileKey": "football_at_home_1_0_0",
+      "titleText": "Football At Home",
+      "captionText": "Catchup on the FA Cup Final from Wembley.",
+      "descriptionText": "",
+      "imageUrl": "/unified-launcher/epg/images/fa-cup-logo.svg",
+      "deviceRoles": {
+        "Primary Communal": {
+          "required": true,
+          "master": true,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/football/client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/football/client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/football/client.json" }
+            }
+          }
+        },
+        "Companion": {
+          "required": false,
+          "deployments": {
+            "prod": {
+              "inputDoc": { "inputDocUrl": "/dmapps/football/companion-client.json" }
+            },
+            "test": {
+              "inputDoc": { "inputDocUrl": "/deployment/test/dmapps/football/companion-client.json" }
+            },
+            "edge": {
+              "inputDoc": { "inputDocUrl": "/deployment/edge/dmapps/football/companion-client.json" }
+            }
+          }
+        }
+      } 
+    }
+  ]
+}
