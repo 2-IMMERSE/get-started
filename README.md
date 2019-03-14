@@ -60,7 +60,6 @@ Deployment scripts are available [here](deployment/README.md) to spin-up a local
 
 A number of example DMApps are provided in the examples subdirectory and organised into an electronic programme guide (EPG) configuration file. See the [examples documentation](examples/README.md) for how to run the samples. Follow the instructions for building and deploying and instance of the 2-IMMERSE platform first.
 
-
 # Licence and Authors
 
 All code and documentation is licensed by the original author and contributors under the Apache License v2.0:
@@ -72,4 +71,4 @@ contributed to this code.
 
 ## Contributing
 
-If you wish to contribute to this project, please get in touch with the authors.
+If you wish to contribute to this project, please see the [governance model](docs/governance.md) and the [communication tools](docs/communication.md) documents.
